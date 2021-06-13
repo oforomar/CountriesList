@@ -25,7 +25,7 @@ public class Main {
         List<City> cities = cityDAO.readCitiesFromCSV(citiesPath);
 
         // Create map with Country code as key and its cities list as a value
-        Map<String, List<City>> map = new HashMap<>();
+        Map<String, List<City>> map1 = new HashMap<>();
 
         for (Country c: countries){
             List<City> tempCityList = new ArrayList<>();
@@ -37,11 +37,11 @@ public class Main {
             }
 
             tempCityList.sort(Comparator.comparing(City::getPopulation));
-            map.put(code, tempCityList);
+            map1.put(code, tempCityList);
         }
 
         // Find the highest population city for each country
-        for (Map.Entry<String, List<City>> entry : map.entrySet()){
+        for (Map.Entry<String, List<City>> entry : map1.entrySet()){
             System.out.println(entry.getKey());
 
             // Each country city list is already sorted from lowest to highest
@@ -50,9 +50,16 @@ public class Main {
                 System.out.println(entry.getValue().get(entry.getValue().size() - 1));
         }
 
+        // OR
+        // Find the highest population city for each country using streams
+        Map<String, List<City>> map2 = cities.stream()
+                                                .collect(Collectors.groupingBy(City::getCountryId));
+
         // Find highest population city capital
-        cities.stream().filter(c -> c.getCapital().equals("primary")).sorted(Comparator.comparing(City::getPopulation)).
-        forEach(System.out::println);
+        cities.stream()
+                .filter(c -> c.getCapital().equals("primary"))
+                .sorted(Comparator.comparing(City::getPopulation))
+                .forEach(System.out::println);
 
         
         System.out.println("Finish");

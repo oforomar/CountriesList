@@ -15,6 +15,7 @@ public class City {
         }catch (Exception e){
             this.id = 0;
         }
+
         try {
             this.population = Integer.parseInt(population);
         }catch (Exception e){
