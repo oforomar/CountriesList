@@ -1,14 +1,30 @@
-import java.awt.image.ImageProducer;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class Main {
+
+    final static String countriesPath = "C:\\Users\\omarh\\IdeaProjects\\CountriesList\\src\\countries.csv";
+    final static String citiesPath = "C:\\Users\\omarh\\IdeaProjects\\CountriesList\\src\\cities.csv";
+
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
+    }
+
     public static void main(String[] args){
         CountryDAO countryDAO = new CountryDAO();
-        List<Country> countries =countryDAO.readCountriesFromCSV("C:\\Users\\omarh\\IdeaProjects\\CountriesList\\src\\countries.csv");
+        List<Country> countries =countryDAO.readCountriesFromCSV(countriesPath);
+
+        // Filter duplicates
+        countries = countries.stream().filter(distinctByKey(Country::getCode)).collect(Collectors.toList());
 
         CityDAO cityDAO = new CityDAO();
-        List<City> cities = cityDAO.readCitiesFromCSV("C:\\Users\\omarh\\IdeaProjects\\CountriesList\\src\\newCities.csv");
+        List<City> cities = cityDAO.readCitiesFromCSV(citiesPath);
 
+        // Create map with Country code as key and its cities list as a value
         Map<String, List<City>> map = new HashMap<>();
 
         for (Country c: countries){
@@ -23,7 +39,22 @@ public class Main {
             tempCityList.sort(Comparator.comparing(City::getPopulation));
             map.put(code, tempCityList);
         }
+
+        // Find the highest population city for each country
+        for (Map.Entry<String, List<City>> entry : map.entrySet()){
+            System.out.println(entry.getKey());
+
+            // Each country city list is already sorted from lowest to highest
+            // Print last city in each list
+            if (!entry.getValue().isEmpty())
+                System.out.println(entry.getValue().get(entry.getValue().size() - 1));
+        }
+
+        // Find highest population city capital
+        cities.stream().filter(c -> c.getCapital().equals("primary")).sorted(Comparator.comparing(City::getPopulation)).
+        forEach(System.out::println);
+
         
-        System.out.printf("Finish");
+        System.out.println("Finish");
     }
 }

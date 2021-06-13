@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CountryDAO {
-        ArrayList<Country> countryList;
+        List<Country> countryList;
 
         public CountryDAO() {
         }
 
         public List<Country> readCountriesFromCSV(String fileName) {
-            countryList = new ArrayList<Country>();
+            countryList = new ArrayList<>();
 
             // Open the countries csv file
             File countriesFile = new File(fileName);
@@ -23,7 +23,7 @@ public class CountryDAO {
                 lines = Files.readAllLines(countriesFile.toPath());
             } catch (Exception e) {
                 System.out.println("Error Reading File !");
-                System.out.println(e.toString());
+                e.printStackTrace();
             }
 
             // extract data from the list and create countries object from each line
@@ -31,17 +31,18 @@ public class CountryDAO {
 
                 String line = lines.get(lineIdx);
 
-                String[] fields = line.split(",");
+                String[] fields = line.split(",", -1);
 
                 countryList.add(createCountry(fields));
             }
+
             return countryList;
         }
 
         public Country createCountry(String[] metadata) {
             for (int fieldIdx = 0; fieldIdx < metadata.length; fieldIdx++)
                 metadata[fieldIdx] = metadata[fieldIdx].trim();
-
-            return new Country(metadata[1], metadata[0]);
+            return new Country(metadata[0], metadata[1]);
         }
+
     }

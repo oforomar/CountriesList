@@ -10,7 +10,7 @@ public class CityDAO {
     }
 
     public List<City> readCitiesFromCSV(String fileName) {
-        cityList = new ArrayList<City>();
+        cityList = new ArrayList<>();
 
         // Open the cities csv file
         File citiesFile = new File(fileName);
@@ -23,7 +23,7 @@ public class CityDAO {
             lines = Files.readAllLines(citiesFile.toPath());
         } catch (Exception e) {
             System.out.println("Error Reading File !");
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
 
         // extract data from the list and create cities object from each line
@@ -31,7 +31,7 @@ public class CityDAO {
 
             String line = lines.get(lineIdx);
 
-            String[] fields = line.split(",");
+            String[] fields = line.split(",", -1);
 
             cityList.add(createCity(fields));
         }
@@ -42,6 +42,6 @@ public class CityDAO {
         for (int fieldIdx = 0; fieldIdx < metadata.length; fieldIdx++)
             metadata[fieldIdx] = metadata[fieldIdx].trim();
 
-        return new City(metadata[0], metadata[2], metadata[3], metadata[4], metadata[1]);
+        return new City(metadata[0], metadata[1], metadata[2], metadata[3], metadata[4]);
     }
 }

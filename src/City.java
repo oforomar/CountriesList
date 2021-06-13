@@ -11,14 +11,14 @@ public class City {
         this.capital = capital;
 
         try {
-            this.id = (int) Double.parseDouble(id);
+            this.id = Integer.parseInt(id);
         }catch (Exception e){
-            this.id = -1;
+            this.id = 0;
         }
         try {
-            this.population = (int) Double.parseDouble(population);
+            this.population = Integer.parseInt(population);
         }catch (Exception e){
-            this.population = -1;
+            this.population = 0;
         }
     }
     public int getId() {
