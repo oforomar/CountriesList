@@ -13,13 +13,13 @@ public class City {
         try {
             this.id = Integer.parseInt(id);
         }catch (Exception e){
-            this.id = 0;
+            this.id = -1;
         }
 
         try {
             this.population = Integer.parseInt(population);
         }catch (Exception e){
-            this.population = 0;
+            this.population = -1;
         }
     }
     public int getId() {

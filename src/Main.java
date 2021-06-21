@@ -16,7 +16,9 @@ public class Main {
 
     public static void main(String[] args){
         CountryDAO countryDAO = new CountryDAO();
+
         List<Country> countries =countryDAO.readCountriesFromCSV(countriesPath);
+        System.out.println(countries.size());
 
         // Filter duplicates
         countries = countries.stream().filter(distinctByKey(Country::getCode)).collect(Collectors.toList());
@@ -52,8 +54,11 @@ public class Main {
 
         // OR
         // Find the highest population city for each country using streams
-        Map<String, List<City>> map2 = cities.stream()
-                                                .collect(Collectors.groupingBy(City::getCountryId));
+        Map<String, Optional<City>> map2 = cities.stream()
+                                                          .collect(Collectors.groupingBy(City::getCountryId,
+                                                                   Collectors.maxBy(Comparator.comparing(City::getPopulation))));
+
+        System.out.println("Max by population === " + map2);
 
         // Find highest population city capital
         cities.stream()
@@ -61,7 +66,5 @@ public class Main {
                 .sorted(Comparator.comparing(City::getPopulation))
                 .forEach(System.out::println);
 
-        
-        System.out.println("Finish");
     }
 }
